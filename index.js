@@ -17,8 +17,10 @@ const emp_stats_API = require(path.join(__dirname,"/src/back/emp_stats_API"));
 emp_stats_API(app);
 
 //API Liz
-const womanAPI = require(path.join(__dirname,"/src/back/womanresearchers_stats_API"));
-womanAPI(app);
+const womanAPIV1 = require(path.join(__dirname,"/src/back/womanresearchers_stats_API/v1"));
+const womanAPIV2 = require(path.join(__dirname,"/src/back/womanresearchers_stats_API/v2"));
+womanAPIV1(app);
+womanAPIV2(app);
 
 
 app.listen(port, () => {

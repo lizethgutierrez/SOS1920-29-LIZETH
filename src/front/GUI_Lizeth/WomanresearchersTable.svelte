@@ -14,7 +14,7 @@
 	import { Pagination, PaginationItem, PaginationLink } from 'sveltestrap';
 	
 	let womanresearchersData = [];
-	const BASE_API_URL="/api/v2/";
+	const BASE_API_URL="/api/v2";
 
     let newWomanresearchersData = {
         country: "",

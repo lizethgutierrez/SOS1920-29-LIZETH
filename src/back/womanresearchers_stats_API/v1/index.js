@@ -223,8 +223,9 @@ app.get(BASE_API_URL+"/womanresearchers-stats", (req,res) =>{
 			womanresearchers.forEach( (woman) => {
 				delete woman._id;
 			});
-		
-			if(womanresearchers.length!=1) {
+			res.send(JSON.stringify(womanresearchers,null,2));
+			console.log("Data sent:"+JSON.stringify(womanresearchers,null,2));
+			/*if(womanresearchers.length!=1) {
 				res.send(JSON.stringify(womanresearchers,null,2));
 				console.log("Data sent:"+JSON.stringify(womanresearchers,null,2));
 			} else if(womanresearchers.length==0){
@@ -232,7 +233,7 @@ app.get(BASE_API_URL+"/womanresearchers-stats", (req,res) =>{
 			}else {
 				res.send(JSON.stringify(womanresearchers[0],null,2));
 				console.log("Data sent:"+JSON.stringify(womanresearchers[0],null,2));
-			}
+			}*/
 
 
 		})

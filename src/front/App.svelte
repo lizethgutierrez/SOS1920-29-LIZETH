@@ -17,8 +17,9 @@
 		"/emp-stats/:country/:year" : EditEmp,
 		"/edq-stats": EdqTable,
 		"/edq-stats/:country/:year": Edit_edq_stat,
-		"/womanresearchers-stat": WomanresearchersTable,
-		"/womanresearchers-stat/:country/:year": Edit_womanresearchers_stat,
+
+		"/womanresearchers-stats": WomanresearchersTable,
+		"/womanresearchers-stats/:country/:year": Edit_womanresearchers_stat,
 		"*" : NotFound
 	}
 </script>
