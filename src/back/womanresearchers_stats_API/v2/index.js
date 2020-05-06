@@ -1,4 +1,7 @@
 module.exports = function(app){
+
+	console.log("Entrando en API womanresearchers-stats...");
+
 	const dataStore= require("nedb");
 	const path = require("path");
 	const dbFileName= path.join(__dirname,"womanresearchers_stats.db");
@@ -23,7 +26,7 @@ var initialwomanresearchers_stats = [
 		country: "Croatia",
 		year: 2014,
 		womanresearchers_he: 3397,
-		womanresearchers_he: 1352,
+		womanresearchers_gov: 1352,
 		womanresearchers_bent:497
 	},
 	{ 
@@ -187,6 +190,7 @@ var initialwomanresearchers_stats = [
 
 //load initial data
 app.get(BASE_API_URL+"/womanresearchers-stats/loadInitialData", (req, res) =>{
+	db.remove({}, {multi:true});
 	db.insert(initialwomanresearchers_stats);
 	res.sendStatus(200,"OK");
 	console.log("Initial Woman Researchers  loaded; "+JSON.stringify(initialwomanresearchers_stats,null,2));

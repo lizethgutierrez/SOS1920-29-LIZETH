@@ -111,6 +111,8 @@
                 <th>Investigadoras en Educación Superior</th>
                 <th>Investigadoras en Administración</th>
                 <th>Investigadoras en Negocios</th>
+                <th>Accion</th>
+
 			</tr>
 		</thead>
 		<tbody>

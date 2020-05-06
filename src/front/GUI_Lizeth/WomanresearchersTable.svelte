@@ -9,7 +9,9 @@
 	import Button from "sveltestrap/src/Button.svelte";
 	
     import Input from "sveltestrap/src/Input.svelte";
-	import FormGroup from "sveltestrap/src/FormGroup.svelte";
+	
+	import Alert from "sveltestrap/src/Alert.svelte";
+
 
 	import { Pagination, PaginationItem, PaginationLink } from 'sveltestrap';
 	
@@ -54,14 +56,14 @@
             const json = await res.json();
 			const jsonNext = await resNextPage.json();
 			
-			womanResearchers = json;
+			womanresearchersData = json;
 			
             if (jsonNextPage.length == 0) {
                 loadmoreData = false;
             } else {
                 loadmoreData = true;
             }
-            console.log("Received " + womanResearchers.length + "Woman researchers data.")
+            console.log("Received " + womanresearchersData.length + "Woman researchers data.")
         } else {
 			console.log("ERROR!");
 			alert_active = true; 
@@ -92,30 +94,37 @@
             getWomanresearchers();
             object = new_data.country;
             if (res.ok) {
-				alert_active = true; 
+				
 				alert_title = "Exito."; 
 				alert_description = "El dato"+ JSON.stringify(new_data) +"se ha insertado con exito"; 
 				alert_color = "success";
+				alert_active = true; 
 				console.log(res.status + ": " + res.statusText);
                 
             } else if (res.status == 409) {
-				alert_active = true; 
+				 
 				alert_title = "Error."; 
 				alert_description = "Error! el dato "+new_data.country +" "+new_data.year +" ya existe "; 
 				alert_color = "danger";
+				alert_active = true;
 				console.log(res.status + ": " + res.statusText);
 
             }else if (res.status == 400){
-				alert_active = true; 
+				 
 				alert_title = "Error."; 
 				alert_description = "Error! debe rellenar todos los campos"; 
 				alert_color = "danger";
+				alert_active = true;
 				console.log(res.status + ": " + res.statusText);
                 
             };
         });
     }
 	async function findWomanresearcher(){
+		offset = 0;
+		actualPage = 1; 
+        loadmoreData = false;
+
 		let search_woman_data = {
             country: newWomanresearchersData.country,
 			year: parseInt(newWomanresearchersData.year),
@@ -140,7 +149,7 @@
 		
 		if(res.status == 200){
 			const json = res.json();
-			data = json;
+			womanresearchersData = json;
 
 			alert_active = true; 
 			alert_title = "Exito."; 
@@ -191,6 +200,10 @@
     }
     
     async function deleteAllWomans() {
+		
+		actualPage = 1; 
+        loadmoreData = false;
+		
 	    console.log("Deleting All Woman Researcher data...");
 		const res = await fetch(BASE_API_URL+"/womanresearchers-stats", {
 			method: "DELETE"
@@ -208,6 +221,9 @@
     }
     
     async function loadInitialData() {
+
+		await deleteAllWomans();
+		loadmoreData = true;
 		
         const res = await fetch(BASE_API_URL+"/womanresearchers-stats/loadInitialData", {
             method: "GET"
@@ -226,28 +242,29 @@
     
     async function upOffset (numPag) {
 		offset += numPag;
-		currentPage += numPag;
+		actualPage += numPag;
 		getWomanresearchers();
 	}
+
+	
 </script>
 
 <main>
-	
-    <h2 style="text-align: center;">Mujeres Investigadoras</h2>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<Alert id="alerta" color={alert_color} isOpen={alert_active} toggle={() => (alert_active = false)}>
+	 {#await womanresearchersData}
+        Loading Women Researchers...
+	{:then womanresearchersData}
+	
+    <h2 style="text-align: center;"><strong> Mujeres Investigadoras</strong></h2>
+
+	<Alert id="alerta" color={alert_color} isOpen={alert_active} toggle="{() => (alert_active = false)}">
 		<h4>{alert_title}</h4>
 		<p>{alert_description}</p>
 	</Alert>
 
-   
-
-    {#await womanresearchersData}
-        Loading Women Researchers...
-    {:then womanresearchersData}
-
-	<Button outline color="primary" on:click={loadInitialData} style="float: left;">Cargar datos iniciales</Button>
-	<Button outline color="danger" on:click={deleteAllWomans} style="float: right;"><i class="fa fa-trash" aria-hidden="true"></i> Borrar todo</Button>
+	<Button outline color="primary" on:click={loadInitialData} style="margin-bottom: 30px;margin-left: 39%;margin-right: 20px;"><i class="fa fa-circle-o-notch fa-spin"></i> Cargar datos iniciales</Button>
+	<Button outline color="danger" on:click={deleteAllWomans} style="margin-bottom: 30px;"><i class="fa fa-trash" aria-hidden="true"></i> Borrar todo</Button>
 
 
         <Table bordered>
@@ -257,7 +274,9 @@
                     <th>Año</th>
                     <th>Investigadoras en Educación Superior</th>
                     <th>Investigadoras en Administración</th>
-                    <th>Investigadoras en Negocios</th>
+					<th>Investigadoras en Negocios</th>
+					<th>Accion</th>
+
                     
                 </tr>
             </thead>
@@ -287,27 +306,27 @@
     {/await}
     <Button outline color="secondary" on:click="{pop}">Volver</Button>
 
-    <Pagination ariaLabel="Cambiar de página" style="padding-left: 45%;">
+	<Pagination ariaLabel="Cambiar de página" style="padding-left: 50%;">
 
-        <PaginationItem class="{currentPage === 1 ? 'disabled' : ''}">
+        <PaginationItem class="{actualPage === 1 ? 'disabled' : ''}">
             <PaginationLink previous href="#/womanresearchers-stats" on:click="{() => upOffset(-1)}" />
         </PaginationItem>
         
-        {#if currentPage != 1}
+        {#if actualPage != 1}
             <PaginationItem>
-                <PaginationLink href="#/womanresearchers-stats" on:click="{() => upOffset(-1)}" >{currentPage - 1}</PaginationLink>
+                <PaginationLink href="#/womanresearchers-stats" on:click="{() => upOffset(-1)}" >{actualPage - 1}</PaginationLink>
             </PaginationItem>
         {/if}
         <PaginationItem active>
-            <PaginationLink href="#/womanresearchers-stats" >{currentPage}</PaginationLink>
+            <PaginationLink href="#/womanresearchers-stats" >{actualPage}</PaginationLink>
         </PaginationItem>
         
-        {#if moreData}
+        {#if loadmoreData}
             <PaginationItem >
-                <PaginationLink href="#/womanresearchers-stats" on:click="{() => upOffset(1)}">{currentPage + 1}</PaginationLink>
+                <PaginationLink href="#/womanresearchers-stats" on:click="{() => upOffset(1)}">{actualPage + 1}</PaginationLink>
             </PaginationItem>
         {/if}
-        <PaginationItem class="{moreData ? '' : 'disabled'}">
+        <PaginationItem class="{loadmoreData ? '' : 'disabled'}">
             <PaginationLink next href="#/womanresearchers-stats" on:click="{() => upOffset(1)}"/>
         </PaginationItem>  
     </Pagination>

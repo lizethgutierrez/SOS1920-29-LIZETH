@@ -23,7 +23,7 @@ var initialwomanresearchers_stats = [
 		country: "Croatia",
 		year: 2014,
 		womanresearchers_he: 3397,
-		womanresearchers_he: 1352,
+		womanresearchers_gov: 1352,
 		womanresearchers_bent:497
 	},
 	{ 
